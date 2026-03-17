@@ -92,7 +92,7 @@
 
     .name {
       top: 28px;
-      left: 271px;
+      left: 269px;
       color: #1D4283;
       font-weight: bold;
       font-size: 20px;
@@ -100,12 +100,12 @@
 
     .position {
       top: 63px;
-      left: 271px;
+      left: 269px;
       font-size: 15px;
     }
 
     .email {
-      top: 111px;
+      top: 108px;
       left: 295px;
       font-size: 15px;
       color: #1D4283;
@@ -121,7 +121,7 @@
     }
 
     .phone {
-      top: 176px;
+      top: 175px;
       left: 295px;
       font-size: 15px;
       color: #1D4283;
@@ -245,6 +245,19 @@ opacity:.7;
 .lang-toggle:hover{
 opacity:1;
 }
+
+.signature-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 800px;
+  max-width: 100%;
+}
+
+.signature-bg {
+  width: 100%;
+  display: block;
+  height: auto;
+}
   </style>
 </head>
 <body>
@@ -361,21 +374,105 @@ opacity:1;
       document.getElementById('position-text').innerText = role;
     }
 
-    function downloadSignature() {
-      const element = document.getElementById('signature-preview');
-      html2canvas(element, {
-        scale: 4,
+    async function downloadSignature() {
+    const original = document.getElementById('signature-preview');
+
+    if (!original) {
+      alert('Signature preview element was not found.');
+      return;
+    }
+
+    await document.fonts.ready;
+
+    const clone = original.cloneNode(true);
+    clone.style.position = 'fixed';
+    clone.style.left = '-99999px';
+    clone.style.top = '0';
+    clone.style.margin = '0';
+    clone.style.transform = 'none';
+    clone.style.width = '800px';
+    clone.style.maxWidth = '800px';
+    clone.style.display = 'block';
+    clone.style.visibility = 'visible';
+    clone.style.opacity = '1';
+
+    const bg = clone.querySelector('.signature-bg');
+    if (bg) {
+      bg.style.width = '800px';
+      bg.style.maxWidth = '800px';
+      bg.style.height = 'auto';
+      bg.style.display = 'block';
+    }
+
+    document.body.appendChild(clone);
+
+    await new Promise(resolve => requestAnimationFrame(resolve));
+
+    // Wait for image load inside the clone
+    const imgs = clone.querySelectorAll('img');
+    await Promise.all(
+      Array.from(imgs).map(img => {
+        if (img.complete) return Promise.resolve();
+        return new Promise(resolve => {
+          img.onload = resolve;
+          img.onerror = resolve;
+        });
+      })
+    );
+
+    const width = Math.ceil(clone.offsetWidth);
+    const height = Math.ceil(clone.offsetHeight);
+
+    console.log('Export size:', { width, height });
+
+    if (!width || !height) {
+      document.body.removeChild(clone);
+      alert('Export failed: the rendered signature size is 0.');
+      return;
+    }
+
+    try {
+      const canvas = await html2canvas(clone, {
+        scale: 3,
         useCORS: true,
         backgroundColor: null,
-        windowWidth: element.scrollWidth,
-        windowHeight: element.scrollHeight
-      }).then(canvas => {
+        width,
+        height,
+        windowWidth: width,
+        windowHeight: height
+      });
+
+      console.log('Canvas size:', canvas.width, canvas.height);
+
+      if (!canvas.width || !canvas.height) {
+        document.body.removeChild(clone);
+        alert('Export failed: canvas was rendered with 0 size.');
+        return;
+      }
+
+      canvas.toBlob((blob) => {
+        document.body.removeChild(clone);
+
+        if (!blob || blob.size === 0) {
+          alert('Export failed: PNG blob is empty.');
+          return;
+        }
+
+        const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.download = 'signature.png';
-        link.href = canvas.toDataURL('image/png');
+        link.href = url;
         link.click();
-      });
+
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }, 'image/png');
+    } catch (err) {
+      document.body.removeChild(clone);
+      console.error(err);
+      alert('Export failed. Check the console for details.');
     }
+  }
+
 
     let lang = localStorage.getItem("lang") || "en";
 
@@ -386,6 +483,6 @@ function toggleLang(){
     localStorage.setItem("lang", lang);
     applyLang();
 }
-  </script>
+</script>
 </body>
 </html>
