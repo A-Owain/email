@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مولّد التوقيع الإلكتروني</title>
+  <link rel="icon" href="./static/Images/favicon.png" type="image/png" />
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+  <style>
+    @font-face {
+      font-family: 'PingAR LT Bold';
+      src: url('./static/Fonts/PingAR+LT-Bold.otf') format('opentype');
+    }
+
+    @font-face {
+      font-family: 'PingAR LT Medium';
+      src: url('./static/Fonts/PingAR+LT-Medium.otf') format('opentype');
+    }
+
+    @font-face {
+      font-family: 'PingAR LT Regular';
+      src: url('./static/Fonts/PingAR+LT-Regular.otf') format('opentype');
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "PingAR LT Regular", sans-serif;
+      background-image: url("./static/Images/main-banner.svg");
+      background-size: cover;
+      background-position: center;
+      background-color: #FBFCFD;
+      padding: 20px;
+      text-align: center;
+      direction: rtl;
+    }
+
+    header {
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      width: 150px;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-family: "PingAR LT Medium", sans-serif;
+      color: #fff;
+      margin: 5px 0;
+    }
+
+    header h1 {
+      color: #fff;
+      font-family: "PingAR LT Bold", sans-serif;
+      font-size: clamp(32px, 5vw, 64px);
+      margin: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 50px auto 0;
+      background: #F1F3F9;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(11, 60, 110, 0.08);
+    }
+
+    .signature-wrapper {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 20px;
+      max-width: 100%;
+    }
+
+    .signature-bg {
+      width: 800px;
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      display: block;
+    }
+
+    .overlay-text {
+      position: absolute;
+      color: #0B3C6E;
+      font-size: 24px;
+      font-family: "PingAR LT Regular", sans-serif;
+      white-space: nowrap;
+    }
+
+    /* Arabic positions — likely to need slight adjustment based on ar-bg.png */
+    .name {
+      top: 28px;
+      right: 271px;
+      color: #1D4283;
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    .position {
+      top: 63px;
+      right: 271px;
+      font-size: 15px;
+    }
+
+    .email {
+      top: 111px;
+      right: 295px;
+      font-size: 15px;
+      color: #1D4283;
+      font-weight: bold;
+      direction: ltr;
+      unicode-bidi: embed;
+    }
+
+    .domain {
+      top: 142px;
+      right: 295px;
+      font-size: 15px;
+      color: #1D4283;
+      font-weight: bold;
+      direction: ltr;
+      unicode-bidi: embed;
+    }
+
+    .phone {
+      top: 176px;
+      right: 295px;
+      font-size: 15px;
+      color: #1D4283;
+      font-weight: bold;
+      direction: ltr;
+      unicode-bidi: embed;
+    }
+
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    form input,
+    form select {
+      font-family: "PingAR LT Regular", sans-serif;
+      margin: 0;
+      padding: 12px;
+      width: 300px;
+      font-size: 16px;
+      border: 1.4px solid #E4E8F1;
+      border-radius: 6px;
+      background-color: #FBFCFD;
+      color: #0B3C6E;
+      text-align: right;
+    }
+
+    form input[type="email"],
+    form input[type="text"].phone-input {
+      direction: ltr;
+      text-align: left;
+    }
+
+    form select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg fill='gray' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: left 12px center;
+      background-size: 16px;
+      cursor: pointer;
+      padding-left: 40px;
+      padding-right: 12px;
+    }
+
+    form input:focus,
+    form select:focus {
+      border-color: #0B3C6E;
+      outline: none;
+    }
+
+    form input::placeholder {
+      color: #4B5A81;
+    }
+
+    button {
+      padding: 12px 16px;
+      font-family: "PingAR LT Medium", sans-serif;
+      font-size: 16px;
+      background: #0B3C6E;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .help {
+      max-width: 800px;
+      margin: 24px auto 0;
+      text-align: right;
+    }
+
+    .help h2 {
+      font-family: "PingAR LT Medium", sans-serif;
+      font-size: 20px;
+      color: #0B3C6E;
+      margin: 20px 0 10px;
+    }
+
+    .help p {
+      font-family: "PingAR LT Medium", sans-serif;
+      font-size: 16px;
+      color: #333;
+      margin: 8px 0;
+      text-align: right;
+    }
+
+    footer {
+      margin-top: 20px;
+    }
+
+    footer p {
+      font-family: "PingAR LT Medium", sans-serif;
+      color: #fff;
+      text-align: left;
+      padding-left: 3.5%;
+      margin: 5px 0;
+    }
+
+    footer a {
+      color: inherit;
+    }
+
+    @media (max-width: 860px) {
+      .container {
+        margin-top: 40px;
+      }
+
+      .signature-wrapper {
+        transform-origin: top center;
+      }
+    }
+
+    .lang-toggle {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: none;
+      border: none;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .05em;
+      cursor: pointer;
+      opacity: .7;
+      margin-top: 0;
+    }
+
+    .lang-toggle:hover {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <button class="lang-toggle" onclick="window.location.href='index.html'">EN</button>
+
+  <header>
+    <img src="./static/Images/logo.svg" alt="شعار الرائدة" class="logo" />
+    <h1>مولّد التوقيع الإلكتروني</h1><br>
+    <p>أنشئ توقيعك الإلكتروني الاحترافي بسهولة!</p>
+  </header>
+
+  <div class="container">
+    <div class="signature-wrapper" id="signature-preview">
+      <img src="./static/Images/ar-bg.png" alt="خلفية التوقيع" class="signature-bg" />
+      <div class="overlay-text name" id="name-text">أدخل الاسم الكامل</div>
+      <div class="overlay-text position" id="position-text">اختر المسمى الوظيفي</div>
+      <div class="overlay-text email" id="email-text">your.email@alraedah.sa</div>
+      <div class="overlay-text domain" id="domain-text">www.alraedah.sa</div>
+      <div class="overlay-text phone" id="phone-text">+966</div>
+    </div>
+
+    <form id="signature-form" onsubmit="return false;">
+      <input type="text" placeholder="الاسم الكامل" oninput="updateField('name-text', this.value, 'أدخل الاسم الكامل')" />
+      <input type="email" placeholder="البريد الإلكتروني" oninput="updateField('email-text', this.value, 'your.email@alraedah.sa')" />
+      <input type="text" class="phone-input" placeholder="رقم الجوال" oninput="updatePhone(this.value)" />
+
+      <select id="department" onchange="populateRoles()" required>
+        <option value="">اختر الإدارة</option>
+        <option value="PMO">إدارة المشاريع</option>
+        <option value="IT">إدارة تقنية المعلومات</option>
+        <option value="Engineering">إدارة الهندسة</option>
+        <option value="Data">إدارة البيانات</option>
+        <option value="Product">إادرة المنتجات</option>
+        <option value="Cybersecurity">إدارة الأمن السيبراني</option>
+        <option value="Risk">إدارة المخاطر</option>
+        <option value="Legal">الإدارة القانونية</option>
+        <option value="Customer_Care">إدارة العناية بالعملاء</option>
+        <option value="Compliance">إدراة الالتزام</option>
+        <option value="Digital_Lending">التمويل الرقمي</option>
+        <option value="Direct_Lending">التمويل المباشر</option>
+        <option value="Marketing">إدارة التسويق</option>
+        <option value="Finance">الإدارة المالية</option>
+      </select>
+
+      <select id="role" onchange="updateSignatureRole()" required>
+        <option value="">اختر المسمى الوظيفي</option>
+      </select>
+    </form>
+
+    <button type="button" onclick="downloadSignature()">تنزيل PNG</button>
+
+    <div class="help">
+      <h2>التعليمات</h2>
+      <p>1. قم بإدخال بياناتك في النموذج أعلاه.</p>
+      <p>2. سيتم تحديث معاينة التوقيع مباشرة أثناء الكتابة.</p>
+      <p>3. اضغط على "تنزيل PNG" لحفظ التوقيع.</p>
+      <p>4. استخدم التوقيع الناتج في بريدك الإلكتروني.</p>
+      <p>5. إذا لم ترغب بإضافة رقم الجوال، اترك الحقل فارغًا.</p>
+    </div>
+  </div>
+
+  <footer>
+    <!-- <p>بدعم من <a href="https://www.alraedah.sa" target="_blank" rel="noopener noreferrer">الرائدة</a></p> -->
+  </footer>
+
+  <script>
+    const rolesByDepartment = {
+      PMO: ["رئيس الاستراتيجية", "رئيس إدارة المشاريع", "مدير برنامج تقنية المعلومات", "محلل أعمال"],
+      IT: ["رئيس تقنية المعلومات", "مدير أول لعمليات التقنية والتطبيقات", "محلل أول", "مهندس تقني وشبكات أول", "مسؤول دعم تقنية المعلومات", "مهندس DevOps أول", "متعاقد خارجي"],
+      Engineering: ["رئيس الهندسة", "مهندس برمجيات أول", "مهندس iOS خبير", "محلل أول", "متعاقد خارجي"],
+      Data: ["رئيس البيانات", "محلل", "مهندس بيانات مشارك", "مهندس بيانات", "محلل بيانات", "متعاقد خارجي"],
+      Product: ["مدير رئيسي", "قائد", "أول"],
+      Cybersecurity: ["الرئيس التنفيذي للأمن السيبراني", "مهندس أمن سيبراني", "محلل أمن سيبراني", "محلل استخبارات التهديدات", "متعاقد خارجي"],
+      Risk: ["رئيس المخاطر", "مسؤول مخاطر", "مساعد نائب رئيس", "مدير ائتمان", "محلل أول للاكتتاب الائتماني", "محلل اكتتاب ائتماني", "مساعد نائب رئيس - مدير العمليات", "أخصائي أول", "أخصائي", "محلل عمليات أول", "محلل أول", "محلل", "محلل إدارة ائتمان", "محلل عمليات"],
+      Legal: ["أخصائي أول", "أخصائي", "محلل قانوني أول", "قائد فريق", "محلل قانوني", "محلل", "مدير التحصيل", "محلل أول", "مسؤول تحصيل أول", "مسؤول تحصيل", "محلل أول للحوكمة المؤسسية"],
+      Customer_Care: ["رئيس العناية بالعملاء", "أخصائي عناية عملاء أول", "أخصائي عناية عملاء"],
+      Compliance: ["رئيس إدارة الالتزام","نائب رئيس - رئيس الالتزام", "مسؤول أول لمكافحة غسل الأموال", "مسؤول الالتزام ومكافحة غسل الأموال", "أخصائي التزام"],
+      Digital_Lending: ["المدير التجاري", "مدير التسويق الرقمي", "مدير نجاح العملاء", "أخصائي نجاح العملاء"],
+      Direct_Lending: ["رئيس المبيعات", "مدير مبيعات", "قائد فريق أول", "قائد فريق", "مدير نمو", "مستشار نمو II", "مستشار نمو I", "أخصائي نمو", "مدير حسابات رئيسية", "مدير أول للحسابات الرئيسية", "محلل", "عمليات المبيعات", "ممثل تطوير أعمال", "أخصائي ضمان جودة"],
+      Marketing: ["أخصائي اتصال أول", "تنفيذي تسويق", "أخصائي وسائل التواصل الاجتماعي", "أخصائي تسويق"],
+      Finance: ["نائب رئيس - رئيس المالية", "نائب رئيس - المالية", "أخصائي مالي أول", "أخصائي مالي", "محلل مالي أول", "محلل مالي"]
+    };
+
+    function updateField(id, value, fallback = '') {
+      document.getElementById(id).textContent = value.trim() ? value : fallback;
+    }
+
+    function updatePhone(value) {
+      document.getElementById('phone-text').textContent = value.trim() ? value : '+966';
+    }
+
+    function populateRoles() {
+      const departmentSelect = document.getElementById('department');
+      const roleSelect = document.getElementById('role');
+      const selectedDept = departmentSelect.value;
+
+      roleSelect.innerHTML = '<option value="">اختر المسمى الوظيفي</option>';
+
+      if (rolesByDepartment[selectedDept]) {
+        rolesByDepartment[selectedDept].forEach(role => {
+          const option = document.createElement('option');
+          option.value = role;
+          option.text = role;
+          roleSelect.appendChild(option);
+        });
+      }
+
+      document.getElementById('position-text').innerText = 'اختر المسمى الوظيفي';
+    }
+
+    function updateSignatureRole() {
+      const role = document.getElementById('role').value;
+      document.getElementById('position-text').innerText = role || 'اختر المسمى الوظيفي';
+    }
+
+    function downloadSignature() {
+      const element = document.getElementById('signature-preview');
+      html2canvas(element, {
+        scale: 4,
+        useCORS: true,
+        backgroundColor: null,
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'arabic-signature.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    }
+  </script>
+</body>
+</html>

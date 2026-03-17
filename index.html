@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Email Signature Generator</title>
+  <link rel="icon" href="./static/Images/favicon.png" type="image/png" />
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <style>
+    @font-face {
+      font-family: 'PingAR LT Bold';
+      src: url('./static/Fonts/PingAR+LT-Bold.otf') format('opentype');
+    }
+
+    @font-face {
+      font-family: 'PingAR LT Medium';
+      src: url('./static/Fonts/PingAR+LT-Medium.otf') format('opentype');
+    }
+
+    @font-face {
+      font-family: 'PingAR LT Regular';
+      src: url('./static/Fonts/PingAR+LT-Regular.otf') format('opentype');
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "PingAR LT Regular", sans-serif;
+      background-image: url("./static/Images/main-banner.svg");
+      background-size: cover;
+      background-position: center;
+      background-color: #FBFCFD;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header {
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      width: 150px;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-family: "PingAR LT Medium", sans-serif;
+      color: #fff;
+      margin: 5px 0;
+    }
+
+    header h1 {
+      color: #fff;
+      font-family: "PingAR LT Bold", sans-serif;
+      font-size: clamp(32px, 5vw, 64px);
+      margin: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 50px auto 0;
+      background: #F1F3F9;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(11, 60, 110, 0.08);
+    }
+
+    .signature-wrapper {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 20px;
+      max-width: 100%;
+    }
+
+    .signature-bg {
+      width: 800px;
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      display: block;
+    }
+
+    .overlay-text {
+      position: absolute;
+      color: #0B3C6E;
+      font-size: 24px;
+      font-family: "PingAR LT Regular", sans-serif;
+      white-space: nowrap;
+    }
+
+    .name {
+      top: 28px;
+      left: 271px;
+      color: #1D4283;
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    .position {
+      top: 63px;
+      left: 271px;
+      font-size: 15px;
+    }
+
+    .email {
+      top: 111px;
+      left: 295px;
+      font-size: 15px;
+      color: #1D4283;
+      font-weight: bold;
+    }
+
+    .domain {
+      top: 142px;
+      left: 295px;
+      font-size: 15px;
+      color: #1D4283;
+      font-weight: bold;
+    }
+
+    .phone {
+      top: 176px;
+      left: 295px;
+      font-size: 15px;
+      color: #1D4283;
+      font-weight: bold;
+    }
+
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    form input,
+    form select {
+      font-family: "PingAR LT Regular", sans-serif;
+      margin: 0;
+      padding: 12px;
+      width: 300px;
+      font-size: 16px;
+      border: 1.4px solid #E4E8F1;
+      border-radius: 6px;
+      background-color: #FBFCFD;
+      color: #0B3C6E;
+    }
+
+    form select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg fill='gray' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+      cursor: pointer;
+    }
+
+    form input:focus,
+    form select:focus {
+      border-color: #0B3C6E;
+      outline: none;
+    }
+
+    form input::placeholder {
+      color: #4B5A81;
+    }
+
+    button {
+      padding: 12px 16px;
+      font-family: "PingAR LT Medium", sans-serif;
+      font-size: 16px;
+      background: #0B3C6E;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .help {
+      max-width: 800px;
+      margin: 24px auto 0;
+      text-align: left;
+    }
+
+    .help h2 {
+      font-family: "PingAR LT Medium", sans-serif;
+      font-size: 20px;
+      color: #0B3C6E;
+      margin: 20px 0 10px;
+    }
+
+    .help p {
+      font-family: "PingAR LT Medium", sans-serif;
+      font-size: 16px;
+      color: #333;
+      margin: 8px 0;
+      text-align: left;
+    }
+
+    footer {
+      margin-top: 20px;
+    }
+
+    footer p {
+      font-family: "PingAR LT Medium", sans-serif;
+      color: #fff;
+      text-align: right;
+      padding-right: 3.5%;
+      margin: 5px 0;
+    }
+
+    footer a {
+      color: inherit;
+    }
+
+    @media (max-width: 860px) {
+      .container {
+        margin-top: 40px;
+      }
+
+      .signature-wrapper {
+        transform-origin: top center;
+      }
+    }
+
+    .lang-toggle{
+position:absolute;
+top:20px;
+right:20px;
+background:none;
+border:none;
+font-size:12px;
+font-weight:600;
+letter-spacing:.05em;
+cursor:pointer;
+opacity:.7;
+}
+
+.lang-toggle:hover{
+opacity:1;
+}
+  </style>
+</head>
+<body>
+
+  <button class="lang-toggle" onclick="window.location.href='arabic.html'">AR</button>
+
+  <header>
+    <img src="./static/Images/logo.svg" alt="AlRaedah Logo" class="logo" />
+    <h1>Email Signature Generator</h1><br>
+    <p>Generate your professional email signature easily!</p>
+  </header>
+
+  <div class="container">
+    <div class="signature-wrapper" id="signature-preview">
+      <img src="./static/Images/en-bg.png" alt="Signature Background" class="signature-bg" />
+      <div class="overlay-text name" id="name-text">Enter Your Name</div>
+      <div class="overlay-text position" id="position-text">Choose Your Role</div>
+      <div class="overlay-text email" id="email-text">your.email@alraedah.sa</div>
+      <div class="overlay-text domain" id="domain-text">www.alraedah.sa</div>
+      <div class="overlay-text phone" id="phone-text">+966</div>
+    </div>
+
+    <form id="signature-form" onsubmit="return false;">
+      <input type="text" placeholder="Name" oninput="updateField('name-text', this.value)" />
+      <input type="email" placeholder="Email" oninput="updateField('email-text', this.value)" />
+      <input type="text" placeholder="Phone" oninput="updatePhone(this.value)" />
+
+      <select id="department" onchange="populateRoles()" required>
+        <option value="">Select Department</option>
+        <option value="PMO">PMO</option>
+        <option value="IT">IT</option>
+        <option value="Engineering">Engineering</option>
+        <option value="Data">Data</option>
+        <option value="Product">Product</option>
+        <option value="Cybersecurity">Cybersecurity</option>
+        <option value="Risk">Risk</option>
+        <option value="Legal">Legal</option>
+        <option value="Customer_Care">Customer Care</option>
+        <option value="Compliance">Compliance</option>
+        <option value="Digital_Lending">Digital Lending</option>
+        <option value="Direct_Lending">Direct Lending</option>
+        <option value="Marketing">Marketing</option>
+        <option value="Finance">Finance</option>
+      </select>
+
+      <select id="role" onchange="updateSignatureRole()" required>
+        <option value="">Select Role</option>
+      </select>
+    </form>
+
+    <button type="button" onclick="downloadSignature()">Download PNG</button>
+
+    <div class="help">
+      <h2>Instructions</h2>
+      <p>1. Fill in your details in the form above.</p>
+      <p>2. The signature preview will update in real-time.</p>
+      <p>3. Click “Download PNG” to save your signature.</p>
+      <p>4. Use the generated signature in your email client.</p>
+      <p>5. If you don’t want to include your mobile number, leave it empty.</p>
+    </div>
+  </div>
+
+  <footer>
+    <!-- <p>Powered by <a href="https://www.alraedah.sa" target="_blank" rel="noopener noreferrer">Al Raedah</a></p>-->
+  </footer>
+
+  <script>
+    const rolesByDepartment = {
+      PMO: ["Head of Strategy", "Head of PMO", "IT Program Manager", "Business Analyst"],
+      IT: ["Head of IT", "Senior Manager of Technology Operation & Applications", "Senior Analyst", "Senior Technical & Network Engineer", "IT Support Administrator", "Senior DevOps Engineer", "Outsourced"],
+      Engineering: ["Head of Engineering", "Senior Software Engineer", "Staff IOS Engineer", "Senior Analyst", "Outsourced"],
+      Data: ["Head of Data", "Analyst", "Associate Data Engineer", "Data Engineer", "Data Analyst", "Outsourced"],
+      Product: ["Principal", "Lead", "Senior"],
+      Cybersecurity: ["CISO", "Cybersecurity Engineer", "Cybersecurity Analyst", "Threat Intelligence Analyst", "Outsourced"],
+      Risk: ["Head of Risk", "Risk Officer", "AVP", "Credit Manager", "Credit underwriting senior analyst", "Credit Underwriting Analyst", "AVP - Operations Manager", "Senior Associate", "Associate", "Senior Operations Analyst", "Senior Analyst", "Analyst", "Credit Administration Analyst", "Operations Analyst"],
+      Legal: ["Senior Associate", "Associate", "Senior legal analyst", "Team Leader", "Legal Analyst", "Analyst", "Collection Manager", "Senior Analyst", "Senior Collection Officer", "Collection Officer", "Senior Corporate government Analyst"],
+      Customer_Care: ["Head of Customer Care", "Senior Customer Care Specialist", "Customer Care Specialist"],
+      Compliance: ["Head of Compliance", "VP - Head of Compliance", "Senior AML Officer", "AML & Compliance Officer", "Compliance Specialist"],
+      Digital_Lending: ["Commercial Director", "Digital Marketing Manager", "Customer Success Manager", "Customer Success Specialist"],
+      Direct_Lending: ["Head of Sales", "Sales Manager", "Senior Team Leader", "Team Leader", "Growth Manager", "Growth Consultant II", "Growth Consultant I", "Growth Associate", "Key Accounts Manager", "Senior Key Accounts Manager", "Analyst", "Sales Operations", "Business Development Representative", "Quality Assurance Specialist"],
+      Marketing: ["Senior Communication Specialist", "Marketing Executive", "Social Media Specialist", "Marketing Specialist"],
+      Finance: ["VP - Head of Finance", "VP - Finance", "Senior Financial Associate", "Financial Associate", "Senior Finance Analyst", "Financial Analyst"]
+    };
+
+    function updateField(id, value) {
+      document.getElementById(id).textContent = value;
+    }
+
+    function updatePhone(value) {
+      document.getElementById('phone-text').textContent = value.trim() ? value : '+966';
+    }
+
+    function populateRoles() {
+      const departmentSelect = document.getElementById('department');
+      const roleSelect = document.getElementById('role');
+      const selectedDept = departmentSelect.value;
+
+      roleSelect.innerHTML = '<option value="">Select Role</option>';
+
+      if (rolesByDepartment[selectedDept]) {
+        rolesByDepartment[selectedDept].forEach(role => {
+          const option = document.createElement('option');
+          option.value = role;
+          option.text = role;
+          roleSelect.appendChild(option);
+        });
+      }
+
+      document.getElementById('position-text').innerText = '';
+    }
+
+    function updateSignatureRole() {
+      const role = document.getElementById('role').value;
+      document.getElementById('position-text').innerText = role;
+    }
+
+    function downloadSignature() {
+      const element = document.getElementById('signature-preview');
+      html2canvas(element, {
+        scale: 4,
+        useCORS: true,
+        backgroundColor: null,
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'signature.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    }
+
+    let lang = localStorage.getItem("lang") || "en";
+
+applyLang();
+
+function toggleLang(){
+    lang = lang === "en" ? "ar" : "en";
+    localStorage.setItem("lang", lang);
+    applyLang();
+}
+  </script>
+</body>
+</html>
